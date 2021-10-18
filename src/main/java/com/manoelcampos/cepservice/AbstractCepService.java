@@ -16,15 +16,11 @@ public abstract class AbstractCepService implements CepService {
     private final static Logger LOGGER = Logger.getLogger(CepService.class.getSimpleName());
 
     /**
-     * Objeto utilizado para enviar requisição HTTP para uma determinada URI.
-     */
-    private final WebTarget target;
-
-    /**
      * Domínio do serviço a ser acessado,
      * definido pelas subclasses.
      */
     private final String dominio;
+    private final Client client;
 
     /**
      * Instancia o serviço de CEP, definindo a URL base para acesso.
@@ -39,9 +35,7 @@ public abstract class AbstractCepService implements CepService {
      */
     protected AbstractCepService(final String dominio) {
         this.dominio = insertTrailingSlash(Objects.requireNonNull(dominio));
-
-        final Client client = ClientBuilder.newClient();
-        this.target = client.target(dominio);
+        this.client = ClientBuilder.newClient();
     }
 
     /**
@@ -78,7 +72,7 @@ public abstract class AbstractCepService implements CepService {
          * estamos indicando que o objeto JSON recebido deve ser automaticamente
          * convertido para um objeto java da classe {@link Endereco}.
          */
-        return target.path(buildPath(cep)).request().get(Endereco.class);
+        return buildPath(cep).request().get(Endereco.class);
     }
 
     /**
@@ -93,12 +87,13 @@ public abstract class AbstractCepService implements CepService {
     }
 
     /**
-     * Constroi o caminho relativo, a partir da {@link #dominio}, para acesso ao endpoint
+     * Constroi o caminho absoluto, a partir da {@link #dominio}, para acesso ao endpoint
      * do serviço de busca de endereço.
-     * Tal caminho é usado para construir a URL completa do endpoint.
      *
-     * @param cep CEP para buscar o endereço
-     * @return o caminho relativo do endpoint de busca de CEP
+     * @param caminho path relativo (sem o domínio) para buscar um endereço a partir de um CEP (que já deve estar no incluso em tal caminho)
+     * @return objeto utilizado para enviar requisição HTTP para uma determinada URI.
      */
-    protected abstract String buildPath(String cep);
+    protected WebTarget buildPath(String caminho) {
+        return client.target(dominio + caminho);
+    }
 }
