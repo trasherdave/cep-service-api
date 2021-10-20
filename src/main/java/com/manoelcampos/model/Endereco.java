@@ -1,5 +1,6 @@
 package com.manoelcampos.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -7,11 +8,20 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Endereco {
+    @JsonAlias({"logradouro", "address"})
     private String logradouro;
     private String complemento;
+
+    @JsonAlias({"bairro", "district"})
     private String bairro;
+
+    @JsonAlias({"localidade", "city"})
     private String localidade;
+
+    @JsonAlias({"uf", "state"})
     private String uf;
+
+    @JsonAlias({"cep", "code"})
     private String cep;
 
     public String getLogradouro() {

@@ -6,6 +6,7 @@
 package com.manoelcampos.cepservice;
 
 import javax.enterprise.context.Dependent;
+import javax.ws.rs.client.WebTarget;
 
 /**
  *
@@ -27,8 +28,8 @@ public final class WidenetService extends AbstractCepService {
     }
 
     @Override
-    protected String buildPath(final String cep) {
-        return "busca-cep/api/cep.json?code=" + cep;
+    protected WebTarget buildPath(final String cep) {
+        return super.buildPath("busca-cep/api/cep.json?code=" + cep);
     }
 
 }
